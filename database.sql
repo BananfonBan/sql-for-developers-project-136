@@ -36,6 +36,22 @@ CREATE TABLE Lessons (
     deleted BOOLEAN
 );
 
--- Связи таблиц
+-- Связи табли
 
-CREATE TABLE
+CREATE TABLE program_modules (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    program_id BIGINT REFERENCES Programs(id),
+    module_id BIGINT REFERENCES Modules(id)
+);
+
+CREATE TABLE module_courses (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    module_id BIGINT REFERENCES Modules(id),
+    course_id BIGINT REFERENCES Courses(id)
+);
+
+CREATE TABLE course_lessons (
+    id BIGINT PRIMARY KEY GENERATED AS IDENTITY,
+    course_id BIGINT REFERENCES Courses(id),
+    lesson_id BIGINT REFERENCES Lessons(id)
+);
