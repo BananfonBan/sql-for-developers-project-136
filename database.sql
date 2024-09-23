@@ -24,7 +24,8 @@ CREATE TABLE modules (
     name VARCHAR (255),
     description VARCHAR (255),
     created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    deleted_at BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE courses (
@@ -50,28 +51,22 @@ CREATE TABLE lessons (
 
 -- Связи таблиц
 CREATE TABLE program_modules (
-    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     program_id BIGINT REFERENCES programs(id) NOT NULL,
-    module_id BIGINT REFERENCES modules(id)
+    module_id BIGINT REFERENCES modules(id) NOT NULL,
+    PRIMARY KEY (program_id, module_id)
 );
 
 CREATE TABLE module_courses (
-    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     module_id BIGINT REFERENCES modules(id) NOT NULL,
-    course_id BIGINT REFERENCES courses(id)
-);
-
-CREATE TABLE course_lessons (
-    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    course_id BIGINT REFERENCES courses(id) NOT NULL,
-    lesson_id BIGINT REFERENCES lessons(id)
+    course_id BIGINT REFERENCES courses(id) NOt NULL,
+    PRIMARY KEY (module_id, course_id)
 );
 
 -- Step 2
 CREATE TABLE teaching_groups (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     slug VARCHAR (255),
-    creared_at TIMESTAMP,
+    created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
 
@@ -80,10 +75,11 @@ CREATE TABLE users (
     name VARCHAR(255),
     email VARCHAR(255),
     password_hash TEXT,
-    teachinggroup_id BIGINT REFERENCES teaching_groups(id) NOT NULL,
+    teaching_group_id BIGINT REFERENCES teaching_groups(id) NOT NULL,
     role users_role NOT NULL,
     created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Step 3
@@ -100,8 +96,8 @@ CREATE TABLE payments (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     enrollment_id BIGINT REFERENCES enrollments(id) NOT NULL,
     amount NUMERIC,
-    payment_amount payments_status NOT NULL,
-    payment_date TIMESTAMP,
+    status payments_status NOT NULL,
+    paid_at TIMESTAMP,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -111,8 +107,8 @@ CREATE TABLE program_completions (
     user_id BIGINT REFERENCES users(id) NOT NULL,
     program_id BIGINT REFERENCES programs(id) NOT NULL,
     status programs_completions NOT NULL,
-    start_program_date TIMESTAMP,
-    finish_program_date TIMESTAMP,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -122,7 +118,7 @@ CREATE TABLE certificates (
     user_id BIGINT REFERENCES users(id) NOT NULL,
     program_id BIGINT REFERENCES programs(id) NOT NULL,
     url VARCHAR(255),
-    certificate_date TIMESTAMP,
+    issued_at TIMESTAMP,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -131,8 +127,8 @@ CREATE TABLE certificates (
 CREATE TABLE quizzes (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     lesson_id BIGINT REFERENCES lessons(id) NOT NULL,
-    title VARCHAR(255),
-    body TEXT,
+    name VARCHAR(255),
+    content TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -149,6 +145,7 @@ CREATE TABLE exercises (
 CREATE TABLE discussions (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     lesson_id BIGINT REFERENCES lessons(id) NOT NULL,
+    user_id BIGINT REFERENCES users(id) NOT NULL,
     text TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
