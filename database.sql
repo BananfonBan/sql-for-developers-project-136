@@ -73,7 +73,7 @@ CREATE TABLE program_modules (
     PRIMARY KEY (program_id, module_id)
 );
 
-CREATE TABLE module_courses (
+CREATE TABLE course_modules (
     module_id BIGINT REFERENCES modules(id) ON DELETE CASCADE,
     course_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
     PRIMARY KEY (module_id, course_id)
@@ -82,7 +82,7 @@ CREATE TABLE module_courses (
 -- Step 2
 CREATE TABLE teaching_groups (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    slug VARCHAR (255),
+    slug VARCHAR(255),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
