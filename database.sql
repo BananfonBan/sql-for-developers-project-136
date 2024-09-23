@@ -16,7 +16,7 @@ discussions,
 blogs CASCADE;
 
 --Создание Перечисляемых типов (ENUM)
-CREATE TYPE users_role AS ENUM ('студент', 'учитель', 'админ');
+CREATE TYPE users_role AS ENUM ('Student', 'teacher', 'Admin');
 
 CREATE TYPE enrollments_status AS ENUM ('active', 'pending', 'cancelled', 'completed');
 
@@ -32,16 +32,16 @@ CREATE TABLE programs (
     name VARCHAR(255),
     price NUMERIC,
     program_type VARCHAR(255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE modules (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR (255),
     description VARCHAR (255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at BOOLEAN DEFAULT FALSE
 );
 
@@ -49,8 +49,8 @@ CREATE TABLE courses (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(255),
     description TEXT,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at BOOLEAN DEFAULT FALSE
 );
 
@@ -61,30 +61,30 @@ CREATE TABLE lessons (
     content TEXT,
     video_url VARCHAR(255),
     position INT,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Связи таблиц
+CREATE TABLE course_modules (
+    course_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
+    module_id BIGINT REFERENCES modules(id) ON DELETE CASCADE
+    PRIMARY KEY (course_id, module_id)
+);
+
 CREATE TABLE program_modules (
     program_id BIGINT REFERENCES programs(id) ON DELETE CASCADE,
     module_id BIGINT REFERENCES modules(id) ON DELETE CASCADE,
     PRIMARY KEY (program_id, module_id)
 );
 
-CREATE TABLE course_modules (
-    module_id BIGINT REFERENCES modules(id) ON DELETE CASCADE,
-    course_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
-    PRIMARY KEY (module_id, course_id)
-);
-
 -- Step 2
 CREATE TABLE teaching_groups (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     slug VARCHAR(255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users (
@@ -92,10 +92,10 @@ CREATE TABLE users (
     name VARCHAR(255),
     email VARCHAR(255),
     password_hash TEXT,
-    teaching_group_id BIGINT REFERENCES teaching_groups(id) ON DELETE SET NULL,
     role users_role NOT NULL,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    teaching_group_id BIGINT REFERENCES teaching_groups(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at BOOLEAN DEFAULT FALSE
 );
 
@@ -105,8 +105,8 @@ CREATE TABLE enrollments (
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     program_id BIGINT REFERENCES programs(id) ON DELETE SET NULL,
     status enrollments_status,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE payments (
@@ -115,8 +115,8 @@ CREATE TABLE payments (
     amount NUMERIC,
     status payments_status NOT NULL,
     paid_at TIMESTAMP,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE program_completions (
@@ -124,10 +124,10 @@ CREATE TABLE program_completions (
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     program_id BIGINT REFERENCES programs(id) ON DELETE SET NULL,
     status programs_completions NOT NULL,
-    started_at TIMESTAMP,
-    completed_at TIMESTAMP,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    started_at DATE,
+    completed_at DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE certificates (
@@ -135,9 +135,9 @@ CREATE TABLE certificates (
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     program_id BIGINT REFERENCES programs(id) ON DELETE SET NULL,
     url VARCHAR(255),
-    issued_at TIMESTAMP,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    issued_at DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Step 4
@@ -145,9 +145,9 @@ CREATE TABLE quizzes (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE SET NULL,
     name VARCHAR(255),
-    content TEXT,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    content JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE exercises (
@@ -155,25 +155,25 @@ CREATE TABLE exercises (
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE SET NULL,
     name VARCHAR(255),
     url VARCHAR(255),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE discussions (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE SET NULL,
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
-    text TEXT,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    text JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE blogs (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
-    name VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
     content TEXT,
     status articles_status NOT NULL,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
