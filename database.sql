@@ -16,7 +16,7 @@ discussions,
 blogs CASCADE;
 CREATE TABLE courses(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    title VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -24,19 +24,18 @@ CREATE TABLE courses(
 );
 CREATE TABLE lessons(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    course_id BIGINT REFERENCES courses (id) ON DELETE
-    SET NULL,
-        title VARCHAR(255) NOT NULL,
-        content TEXT,
-        video_url VARCHAR(255),
-        position SMALLINT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        deleted_at TIMESTAMP
+    course_id BIGINT REFERENCES courses (id) ON DELETE SET NULL,
+    name VARCHAR(255) NOT NULL,
+    content TEXT,
+    video_url VARCHAR(255),
+    position SMALLINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 CREATE TABLE modules(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    title VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -106,8 +105,7 @@ CREATE TABLE program_completions(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT REFERENCES users(id) ON DELETE
     SET NULL,
-        program_id BIGINT REFERENCES programs(id) ON DELETE
-    SET NULL,
+        program_id BIGINT REFERENCES programs(id) ON DELETE SET NULL,
         status VARCHAR(20) CHECK (
             status IN ('active', 'completed', 'pending', 'cancelled')
         ) NOT NULL,
@@ -131,7 +129,7 @@ CREATE TABLE quizzes(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     lesson_id BIGINT REFERENCES lessons (id) ON DELETE
     SET NULL,
-        title VARCHAR(255),
+        name VARCHAR(255),
         content JSONB,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -157,9 +155,8 @@ CREATE TABLE discussions(
 );
 CREATE TABLE blogs(
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id BIGINT REFERENCES users (id) ON DELETE
-    SET NULL,
-        title VARCHAR(255) NOT NULL,
+    user_id BIGINT REFERENCES users (id) ON DELETE SET NULL,
+        name VARCHAR(255) NOT NULL,
         content TEXT,
         status VARCHAR(20) CHECK (
             status IN (
