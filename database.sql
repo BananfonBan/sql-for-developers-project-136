@@ -5,7 +5,7 @@ CREATE TABLE Programs (
     cost INT,
     type VARCHAR(50),
     created_at TIMESTAMP,
-    update_at TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE Modules (
@@ -13,7 +13,7 @@ CREATE TABLE Modules (
     title VARCHAR (50),
     description VARCHAR (255),
     created_at TIMESTAMP,
-    update_at TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE Courses (
@@ -32,7 +32,7 @@ CREATE TABLE Lessons (
     video_link VARCHAR(255),
     number INT,
     created_at TIMESTAMP,
-    update_at TIMESTAMP,
+    updated_at TIMESTAMP,
     course_id BIGINT REFERENCES Courses(id),
     deleted BOOLEAN
 );
@@ -99,7 +99,7 @@ CREATE TABLE Payments (
     payment_amount payments_status,
     payment_date TIMESTAMP,
     created_at TIMESTAMP,
-    update_at TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE ProgramCompletions (
@@ -119,6 +119,25 @@ CREATE TABLE Certificates (
     program_id BIGINT REFERENCES Programs(id),
     url VARCHAR(50),
     certificate_date TIMESTAMP,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+-- Step 4
+CREATE TABLE Quizzes (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    lesson_id BIGINT REFERENCES Lessons(id),
+    title VARCHAR(50),
+    body TEXT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE TABLE Exercises (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    lesson_id BIGINT REFERENCES Lessons(id),
+    title VARCHAR(50),
+    url VARCHAR(50),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
