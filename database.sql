@@ -27,7 +27,7 @@ CREATE TABLE courses (
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at BOOLEAN DEFAULT FALSE
+    deleted_at TIMESTAMP
 );
 CREATE TABLE lessons (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -38,15 +38,15 @@ CREATE TABLE lessons (
     position INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at BOOLEAN DEFAULT FALSE
+    deleted_atTIMESTAMP
 );
 CREATE TABLE modules (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR (255),
-    description VARCHAR (255),
+    description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at BOOLEAN DEFAULT FALSE
+    deleted_at TIMESTAMP
 );
 CREATE TABLE programs (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -83,7 +83,7 @@ CREATE TABLE users (
     teaching_group_id BIGINT REFERENCES teaching_groups(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at BOOLEAN DEFAULT FALSE
+    deleted_at TIMESTAMP
 );
 -- Step 3
 CREATE TABLE enrollments (
